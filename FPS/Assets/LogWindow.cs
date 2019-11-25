@@ -21,10 +21,17 @@ public class LogWindow : MonoBehaviour
 
     public Color defaultColor = Color.black;
     public int defaultSize = 14;
+
+    IEnumerator ScrollDown()
+    {
+        yield return new WaitForEndOfFrame();
+        scrollRect.verticalNormalizedPosition = 0.0f;
+    }
     
     void Awake()
-    { 
-        inputField.onEndEdit.AddListener(delegate {onEndEdit();});
+    {
+        inputField.onEndEdit.AddListener(delegate { onEndEdit(); });
+        scrollRect.onValueChanged.AddListener(delegate { StartCoroutine("ScrollDown"); });
     }
 
     public void AddLog(string txt)
@@ -41,14 +48,11 @@ public class LogWindow : MonoBehaviour
     {
         var logText = Instantiate(logTextPrefab, content.transform);
 
+        logText.transform.SetAsLastSibling();
+
         logText.SetSize(size);
         logText.SetColor(color);
         logText.SetText(txt);
-
-        Debug.Log("넣음");
-
-        scrollRect.verticalNormalizedPosition = 0.0f;
-        Debug.Log(scrollRect.verticalNormalizedPosition);
     }
 
     public void onEndEdit()

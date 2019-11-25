@@ -10,6 +10,8 @@ public class PlayerMove : MonoBehaviourMinNet
     public enum Team{ Red, Blue, Spectator, Individual, None };
     public enum State { Alive, Die };
     
+    public string playerName = "";
+
     public Team team = Team.Spectator;
     public State state = State.Die;
 
@@ -19,13 +21,12 @@ public class PlayerMove : MonoBehaviourMinNet
     [SerializeField]
     private CharacterController controller;
 
-    [SerializeField]
-    private MeshRenderer meshRenderer;
-
     private Vector3 keyInput = new Vector3(0.0f, 0.0f, 0.0f);
     public Animator animator;
     private Transform chestTransform;
     public Vector3 setting;
+
+    public float gravityPower = 0.0f;
 
     private GunGrip grip = null;
     public Gun GunPrefab;
@@ -217,16 +218,16 @@ public class PlayerMove : MonoBehaviourMinNet
             case State.Alive:
             SetCollision(true);
             grip.gun.gameObject.SetActive(true);
-            FollowCamera.Instance.viewMode = false;
             animator.SetBool("Die", false);
             controller.enabled = true;
             grip.gun.enabled = true;
+            if(isMine)
+                FollowCamera.Instance.lookObject = null;
             break;
 
             case State.Die:
             SetCollision(false);
             grip.gun.gameObject.SetActive(false);
-            FollowCamera.Instance.viewMode = true;
             animator.SetBool("Die", true);
             controller.enabled = false;
             grip.gun.enabled = false;
@@ -236,19 +237,25 @@ public class PlayerMove : MonoBehaviourMinNet
         this.state = state;
     }
 
-    public void PlayerDie(int shooterID, string shooterName)
+    public void PlayerDie(int shooterID, string shooterName, bool isHead)
     {// 죽음
         ChangeState(State.Die);
 
-        var player = PlayerManager.GetPlayer(shooterID);
-        if(player == null)
-        {
+        var killer = PlayerManager.GetPlayer(shooterID);
+        if(killer == null)
             return;
+
+        if(isMine)
+        {// 내가 죽음
+            Debug.Log(killer.gameObject);
+            Debug.Log("쥬ㅜㄱ음");
+            FollowCamera.Instance.lookObject = killer.gameObject;
         }
-        if(player.isMine)
+        if(killer.isMine)
         {// 내가 죽임
             CrossHair.Instance.KillFeedBack();
         }
+        UiManager.Instance.AddKillLog(shooterID, objectId, isHead);
     }
 
     public void PlayerRestore(Vector3 position)
@@ -270,25 +277,16 @@ public class PlayerMove : MonoBehaviourMinNet
         }
     }
 
-    public void HitCast(int hitObjectId, int damage, bool isHead)
+    public void HitCast(Vector3 shotPosition, int damage, bool isHead)
     {
+        nowHP -= damage;
+        if (nowHP <= 0)
+            nowHP = 0;
+
         if(isMine)
         {
-            if (objectId == hitObjectId)
-            {// 자신이 맞음
-                nowHP -= damage;
-                if(nowHP <= 0)
-                    nowHP = 0;
-
-                if(isHead)
-                {
-
-                }
-                else
-                {
-
-                }
-            }
+            Debug.Log("내가 맞앗당");
+            UiManager.Instance.AddHitCircle(shotPosition);
         }
     }
 
@@ -351,7 +349,7 @@ public class PlayerMove : MonoBehaviourMinNet
 
         if(Input.GetKeyDown(KeyCode.B))
         {
-            RPC("HitSync", MinNetRpcTarget.Server, objectId, transform.position, true);
+            RPC("HitSync", MinNetRpcTarget.Server, objectId, transform.position + Vector3.one * 0.1f, transform.position + Vector3.one * 0.1f, true);
         }
 
         if (!isRun)
@@ -385,7 +383,7 @@ public class PlayerMove : MonoBehaviourMinNet
                             }
 
                             component = hitObject.GetComponent<PlayerMove>();
-                            RPC("HitSync", MinNetRpcTarget.Server, component.objectId, hitObject.transform.position, isHead);
+                            RPC("HitSync", MinNetRpcTarget.Server, component.objectId, hitObject.transform.position, transform.position, isHead);
                         }
                     }
                 }
@@ -470,11 +468,14 @@ public class PlayerMove : MonoBehaviourMinNet
         else
             speed = 4.0f;
 
-        // if(controller.isGrounded)
+        var force = transform.rotation * keyInput.normalized * speed * Time.fixedDeltaTime;
+
+        if(!controller.isGrounded)
         {
-            controller.Move(transform.rotation * keyInput * speed * Time.fixedDeltaTime);
+            force.y -= gravityPower * Time.fixedDeltaTime;
         }
 
+        controller.Move(force);
     }
 
     void InitAnimationSyncingSystem()
@@ -518,9 +519,9 @@ public class PlayerMove : MonoBehaviourMinNet
         RPC("Chat", MinNetRpcTarget.Server, chat);
     }
 
-    public void Chat(string chat)
+    public void Chat(string chat, float r, float g, float b, float a)// 채팅 내용과 팀에 알맞은 색상 값을 받음
     {
-        UiManager.Instance.AddChat(chat);
+        UiManager.Instance.AddChat(chat, new Color(r, g, b, a));
     }
 
     void FixedUpdate()

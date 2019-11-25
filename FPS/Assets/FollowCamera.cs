@@ -27,12 +27,17 @@ public class FollowCamera : MonoBehaviour
 
     public bool mouseLock = true;
 
+    public GameObject lookObject = null;
+
     public void SetMouseLock(bool mouseLock)
     {
         this.mouseLock = mouseLock;
 
         if(mouseLock)
+        {
             Cursor.lockState = CursorLockMode.Locked;
+            lookObject = null;
+        }
         else
             Cursor.lockState = CursorLockMode.None;
 
@@ -109,15 +114,6 @@ public class FollowCamera : MonoBehaviour
 
         int layer = (1 << 8) | (1 << 9);
 
-        // if(Physics.Raycast(transform.position, camPoint, out hit, Mathf.Infinity, layer))
-        // {
-        //     retVal = hit.point;
-            
-        //     hitObject = hit.collider.gameObject;
-
-        //     Debug.Log(hitObject.name);
-
-        // }
         var hits = Physics.RaycastAll(transform.position, camPoint - transform.position, Mathf.Infinity, layer).OrderBy(h => h.distance).ToArray();
         var length = hits.Length;
 
@@ -181,19 +177,31 @@ public class FollowCamera : MonoBehaviour
             return;
         }
         
-        if(mouseLock)
+        if(lookObject == null)
         {
-            vector.y += Input.GetAxis("Mouse X") * 150.0f * Time.deltaTime;
-            vector.x -= Input.GetAxis("Mouse Y") * 150.0f * Time.deltaTime;
+            if(mouseLock)
+            {
+                vector.y += Input.GetAxis("Mouse X") * 150.0f * Time.deltaTime;
+                vector.x -= Input.GetAxis("Mouse Y") * 150.0f * Time.deltaTime;
+
+                nowDistance = Mathf.Lerp(nowDistance, targetDistance, Time.fixedDeltaTime * lerp);
+                center.y = Mathf.Lerp(center.y, targetZoomCenterY, Time.fixedDeltaTime * lerp);
+
+                vector.x = ClampAngle(vector.x, yMinLimit, yMaxLimit);
+
+                transform.rotation = Quaternion.Euler(vector);
+                transform.position = transform.rotation * new Vector3(center.x, center.y, -nowDistance) + targetObject.transform.position + new Vector3(0.0f, height, 0.0f);
+            }
+        }
+        else
+        {
+            var direction =  lookObject.transform.position - transform.position;
+            Quaternion toRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, 5.0f * Time.deltaTime);
+            // transform.LookAt(lookObject.transform.position);
         }
 
-        nowDistance = Mathf.Lerp(nowDistance, targetDistance, Time.fixedDeltaTime * lerp);
-        center.y = Mathf.Lerp(center.y, targetZoomCenterY, Time.fixedDeltaTime * lerp);
 
-        vector.x = ClampAngle(vector.x, yMinLimit, yMaxLimit);
-
-        transform.rotation = Quaternion.Euler(vector);
-        transform.position = transform.rotation * new Vector3(center.x, center.y, -nowDistance) + targetObject.transform.position + new Vector3(0.0f, height, 0.0f);
 
         int layer = 1 << 8;
         

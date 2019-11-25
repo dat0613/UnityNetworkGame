@@ -10,8 +10,19 @@ public class UiManager : MonoBehaviour
     [SerializeField]
     LogWindow logWindow;
 
+    [SerializeField]
+    KillLogWindow killLogWindow;
+
     bool onGame = false;
+
+    [HideInInspector]
     public bool skip1Frame = false;// 엔터를 한번 더 쳐서 채팅을 끝냈을때 엔터 이벤트가 한 프레임 동안 남아 있어서 한 프레임 스킵 해야함
+
+    [SerializeField]
+    HitCircle hitCirclePrefab;
+
+    [SerializeField]
+    Transform hitCircles;
 
     static UiManager instance = null;
     public static UiManager Instance
@@ -65,8 +76,28 @@ public class UiManager : MonoBehaviour
         logWindow.ChattingMode();
     }
 
-    public void AddChat(string chat)
+    public void AddChat(string chat, Color color)
     {
-        logWindow.AddLog(chat);
+        logWindow.AddLog(chat, color);
+    }
+
+    public void AddKillLog(int killerId, int victimId, bool headShot)
+    {
+        var killer = PlayerManager.GetPlayer(killerId);
+        var victim = PlayerManager.GetPlayer(victimId);
+        
+        if(killer == null || victim == null)
+            return;
+
+        killLogWindow.AddKillLog(killer.playerName, killer.team, victim.playerName, victim.team, headShot);
+    }
+
+    public void AddHitCircle(Vector3 hitPosition)
+    {
+        var hitCircle = Instantiate(hitCirclePrefab);
+        hitCircle.transform.SetParent(hitCircles);
+        hitCircle.SetLocalScale();
+
+        hitCircle.SetOption(hitPosition);
     }
 }
