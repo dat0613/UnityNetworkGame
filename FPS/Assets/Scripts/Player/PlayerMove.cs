@@ -49,6 +49,9 @@ public class PlayerMove : MonoBehaviourMinNet
     private Vector3 movepersecond;
     private Vector3 rotatepersecond;
 
+    public int kill;
+    public int death;
+
     float timeDifference = 0.0f;
     float rotateTime = 0.0f;// 가장 최근에 동기화가 일어났던 때로 부터의 시간
     private bool isKeyInput = false;
@@ -197,7 +200,11 @@ public class PlayerMove : MonoBehaviourMinNet
         nowHP = hp;
         ChangeTeam((Team)team);
         ChangeState(State.Alive);
-        UiManager.Instance.SetGameUi(this.maxHP, this.nowHP, grip.gun.maxOverheat, grip.gun.nowOverheat);
+        if(isMine)
+        {
+            UIManager.Instance.SetGameUI(this.maxHP, this.nowHP, grip.gun.maxOverheat, grip.gun.nowOverheat);
+            UIManager.Instance.ViewGameUI();
+        }
     }
 
     public override void OnSetID(int objectID)
@@ -210,36 +217,43 @@ public class PlayerMove : MonoBehaviourMinNet
 
     public void SyncPosition(Vector3 position, Vector3 chestRotation, int timeStamp)
     {
-        targetPosition = position;
-        targetChestRotation = chestRotation;
+        if(Vector3.Distance(position, transform.position) > 10)
+        {
+            transform.position = position;
+        }
+        else
+        {
+            targetPosition = position;
+            targetChestRotation = chestRotation;
 
-        timeDifference = timeStamp - lastTimeStamp;
-        lastTimeStamp = timeStamp;
+            timeDifference = timeStamp - lastTimeStamp;
+            lastTimeStamp = timeStamp;
 
-        Vector3 rotationGap = chestRotation - chestTransform.rotation.eulerAngles;
+            Vector3 rotationGap = chestRotation - chestTransform.rotation.eulerAngles;
 
-        if(rotationGap.y > 180.0f)      // 각도가 갑자기 확 돌아가는것을 막기위한 작업
-            rotationGap.y -= 360.0f;
-        if(rotationGap.y < -180.0f)
-            rotationGap.y += 360.0f;
-        if(rotationGap.x > 180.0f)
-            rotationGap.x -= 360.0f;
-        if(rotationGap.x < -180.0f)
-            rotationGap.x += 360.0f;
-        if(rotationGap.z > 180.0f)
-            rotationGap.z -= 360.0f;
-        if(rotationGap.z < -180.0f)
-            rotationGap.z += 360.0f;
+            if(rotationGap.y > 180.0f)      // 각도가 갑자기 확 돌아가는것을 막기위한 작업
+                rotationGap.y -= 360.0f;
+            if(rotationGap.y < -180.0f)
+                rotationGap.y += 360.0f;
+            if(rotationGap.x > 180.0f)
+                rotationGap.x -= 360.0f;
+            if(rotationGap.x < -180.0f)
+                rotationGap.x += 360.0f;
+            if(rotationGap.z > 180.0f)
+                rotationGap.z -= 360.0f;
+            if(rotationGap.z < -180.0f)
+                rotationGap.z += 360.0f;
 
-        rotateTime = 0.0f;
+            rotateTime = 0.0f;
 
-        Vector3 rotatePer1ms = rotationGap / timeDifference;
+            Vector3 rotatePer1ms = rotationGap / timeDifference;
 
-        Vector3 positionGap = position - transform.position;
-        Vector3 movePer1ms = positionGap / timeDifference;
+            Vector3 positionGap = position - transform.position;
+            Vector3 movePer1ms = positionGap / timeDifference;
 
-        movepersecond = movePer1ms * 1000;
-        rotatepersecond = rotatePer1ms * 1000;
+            movepersecond = movePer1ms * 1000;
+            rotatepersecond = rotatePer1ms * 1000;
+        }
     }
 
     void SetCollision(bool state)
@@ -265,7 +279,6 @@ public class PlayerMove : MonoBehaviourMinNet
 
         if(grip == null)
         {
-            Debug.Log("grip이 없대 isMine : " + isMine.ToString());
         }
         else
         {
@@ -277,8 +290,6 @@ public class PlayerMove : MonoBehaviourMinNet
     {
         if(this.team == team)
             return;
-
-        Debug.Log(objectId.ToString() + " 의 팀을 " + team.ToString() + " 으로 바꿈, isMine : " + isMine.ToString());
 
         switch (team)
         {
@@ -342,14 +353,22 @@ public class PlayerMove : MonoBehaviourMinNet
         }
         if(killer.isMine)
         {// 내가 죽임
-            UiManager.Instance.KillFeedBack();
+            UIManager.Instance.KillFeedBack();
         }
-        UiManager.Instance.AddKillLog(shooterID, objectId, isHead);
+        UIManager.Instance.AddKillLog(shooterID, objectId, isHead);
     }
 
-    public void DieInformation(int shooterID, int myKillCount, int killersKillCount)
+    public void DieInformation(int shooterID, int myKillCount, int killersKillCount, int respawnTime, int timeStamp)
     {
+        var killer = PlayerManager.GetPlayer(shooterID);
+        if(killer == null)
+            return;
 
+        float latency = MinNetUser.ServerTime - timeStamp;// 네트워크 상에서 지연된 시간을 계산함
+        float respawnTimef = (respawnTime - latency) * 0.001f;// 단위를 초 단위로 바꿈
+
+        UIManager.Instance.SetDieUI(killer.playerName, myKillCount, killersKillCount, respawnTimef);
+        UIManager.Instance.ViewDieUI();
     }
 
     public void PlayerRestore(Vector3 position)
@@ -359,7 +378,7 @@ public class PlayerMove : MonoBehaviourMinNet
 
     public void HitSuccess(bool isHead, int damage)
     {
-        UiManager.Instance.HitFeedBack(damage, isHead);
+        UIManager.Instance.HitFeedBack(damage, isHead);
 
         if(isHead)
         {
@@ -380,9 +399,9 @@ public class PlayerMove : MonoBehaviourMinNet
 
         if(isMine)
         {
-            UiManager.Instance.AddHitCircle(shotPosition);
-            UiManager.Instance.ViewEffect(damage);
-            UiManager.Instance.UpdateGameUi(nowHP, grip.gun.nowOverheat);
+            UIManager.Instance.AddHitCircle(shotPosition);
+            UIManager.Instance.ViewEffect(damage);
+            UIManager.Instance.UpdateGameUI(nowHP, grip.gun.nowOverheat);
         }
     }
 
@@ -617,7 +636,13 @@ public class PlayerMove : MonoBehaviourMinNet
 
     public void Chat(string chat, float r, float g, float b, float a)// 채팅 내용과 팀에 알맞은 색상 값을 받음
     {
-        UiManager.Instance.AddChat(chat, new Color(r, g, b, a));
+        UIManager.Instance.AddChat(chat, new Color(r, g, b, a));
+    }
+
+    public void SyncScore(int kill, int death)
+    {
+        this.kill = kill;
+        this.death = death;
     }
 
     void FixedUpdate()
@@ -636,7 +661,7 @@ public class PlayerMove : MonoBehaviourMinNet
 
                 }
 
-                UiManager.Instance.UpdateGameUi(nowHP, grip.gun.nowOverheat);// 죽었을때는 게임 ui를 숨길것 이므로 살아있을때만 업데이트 하면 댐
+                UIManager.Instance.UpdateGameUI(nowHP, grip.gun.nowOverheat);// 죽었을때는 게임 ui를 숨길것 이므로 살아있을때만 업데이트 하면 댐
             }
 
             if (state == State.Alive && (zoomMode || isKeyInput))

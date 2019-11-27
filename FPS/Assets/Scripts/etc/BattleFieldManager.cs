@@ -12,7 +12,7 @@ public class BattleFieldManager : MonoBehaviourMinNet
 
     public void ChangeState(BattleFieldState state, int time)
     {
-        UiManager.Instance.SetTimer(time * 0.001f);
+        UIManager.Instance.SetTimer(time * 0.001f);
 
         this.state = state;
 

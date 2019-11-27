@@ -27,6 +27,8 @@ public class KillLogWindow : MonoBehaviour
 
     int sign = 0;
     
+    bool visible = true;
+
     void Awake()
     {
         sign = 1;
@@ -68,6 +70,8 @@ public class KillLogWindow : MonoBehaviour
         obj.SetTargetPosition(Vector3.zero);
         obj.lerp = lerp;
 
+        obj.SetVisible(visible);
+
         objectList.AddLast(obj);
 
         if(objectList.Count > maxLog)
@@ -102,5 +106,15 @@ public class KillLogWindow : MonoBehaviour
         var KillLog = Instantiate(killLogPrefab);
         KillLog.SetOption(killerName, killerTeam, victimName, victimTeam, headShot);
         AddObject(KillLog);
+    }
+
+    public void SetVisible(bool visible)
+    {
+        this.visible = visible;
+
+        foreach (var log in objectList)
+        {
+            log.SetVisible(visible);
+        }
     }
 }

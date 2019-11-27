@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class CrossHair : MonoBehaviour
 {
-    public bool Visible = true;
+    public bool visible = true;
 
     [SerializeField]
     private Image crossHairImage;
@@ -18,12 +18,12 @@ public class CrossHair : MonoBehaviour
     
     void Awake()
     {
-        crossHairImage.enabled = Visible;
+        crossHairImage.enabled = visible;
     }
 
     public void HitFeedBack(int damage, bool isHeadShot)
     {
-        if(!Visible)
+        if(!visible)
             return;
 
         if(isHeadShot)
@@ -40,15 +40,21 @@ public class CrossHair : MonoBehaviour
 
     public void KillFeedBack()
     {
-        if (!Visible)
+        if (!visible)
             return;
 
         killFeedBack.FeedBack();
         SoundManager.Instance.PlaySound("Kill");
     }
 
-    public void SetVisible(bool Visible)
+    public void SetVisible(bool visible)
     {
-        this.Visible = Visible;
+        this.visible = visible;
+
+        crossHairImage.enabled = visible;
+        hitFeedBack.SetVisible(visible);
+        headShotFeedBack.SetVisible(visible);
+
+        killFeedBack.SetVisible(visible);
     }
 }

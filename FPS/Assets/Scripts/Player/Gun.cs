@@ -31,12 +31,14 @@ public class Gun : MonoBehaviour
 
     private bool canShot = true;
 
+    Coroutine coolingSystem = null;
+
     /// <summary>
     /// Awake is called when the script instance is being loaded.
     /// </summary>
     void Awake()
     {
-        StartCoroutine("gunCoolingSystem");
+
     }
 
     public void SetVisible(bool visible)
@@ -82,6 +84,23 @@ public class Gun : MonoBehaviour
                 // nowOverheat = Mathf.Lerp(nowOverheat, 0.0f, Time.deltaTime * lerp);
                 yield return 0;
             }
+        }
+    }
+
+    void OnEnable()
+    {
+        if (coolingSystem == null)
+        {
+            coolingSystem = StartCoroutine("gunCoolingSystem");
+        }
+    }
+
+    void OnDisable()
+    {
+        if(coolingSystem != null)
+        {
+            StopCoroutine(coolingSystem);
+            coolingSystem = null;
         }
     }
 

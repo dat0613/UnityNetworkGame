@@ -34,4 +34,9 @@ public class LogText : MonoBehaviour
         fontSize = size;
         text.fontSize = size;
     }
+
+    public void SetVisible(bool visible)
+    {
+        text.enabled = visible;
+    }
 }

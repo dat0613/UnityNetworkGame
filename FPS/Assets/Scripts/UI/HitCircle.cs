@@ -114,4 +114,9 @@ public class HitCircle : MonoBehaviour
 
         rectTransform.localRotation = Quaternion.Euler(0.0f, 0.0f, deg);
     }
+
+    public void SetVisible(bool visible)
+    {
+        image.enabled = visible;
+    }
 }

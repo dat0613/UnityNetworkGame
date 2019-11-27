@@ -24,7 +24,7 @@ public class Launcher : MonoBehaviourMinNetCallBack
 
     public override void UserEnterRoom(int roomNumber, string roomName)
     {
-        Debug.Log(roomName + " 에 들어옴 : " + roomNumber);
+        // Debug.Log(roomName + " 에 들어옴 : " + roomNumber);
         
         if(roomNumber == -1)
         {

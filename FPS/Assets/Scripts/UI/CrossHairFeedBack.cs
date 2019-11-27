@@ -62,4 +62,12 @@ public class CrossHairFeedBack : MonoBehaviour
                 lineRenderer[i].startColor = lineRenderer[i].endColor = new Color(1.0f, 1.0f, 1.0f, alpha);
         }
     }
+
+    public void SetVisible(bool visible)
+    {
+        foreach (var line in lineRenderer)
+        {
+            line.enabled = visible;
+        }
+    }
 }

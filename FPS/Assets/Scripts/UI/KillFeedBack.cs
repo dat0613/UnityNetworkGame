@@ -36,4 +36,9 @@ public class KillFeedBack : MonoBehaviour
 
         render.color = new Color(1.0f, 0.0f, 0.0f, alpha);
     }
+
+    public void SetVisible(bool visible)
+    {
+        render.enabled = visible;
+    }
 }

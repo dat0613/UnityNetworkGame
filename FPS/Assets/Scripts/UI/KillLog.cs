@@ -121,4 +121,13 @@ public class KillLog : MonoBehaviour
             
         return false;
     }
+
+    public void SetVisible(bool visible)
+    {
+        killerText.enabled = 
+        victimText.enabled = 
+        arrowImage.enabled = 
+        backgroundImage.enabled = 
+        visible;
+    }
 }

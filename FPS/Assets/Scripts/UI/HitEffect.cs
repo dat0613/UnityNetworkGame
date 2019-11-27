@@ -37,4 +37,9 @@ public class HitEffect : MonoBehaviour
     {
         alpha += damage * multiple;
     }
+
+    public void SetVisible(bool visible)
+    {
+        image.enabled = visible;
+    }
 }

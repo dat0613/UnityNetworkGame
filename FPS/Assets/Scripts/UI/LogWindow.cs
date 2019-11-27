@@ -11,6 +11,9 @@ public class LogWindow : MonoBehaviour
     InputField inputField;
 
     [SerializeField]
+    Image inputFieldImage;
+
+    [SerializeField]
     GameObject content;
 
     [SerializeField]
@@ -18,6 +21,11 @@ public class LogWindow : MonoBehaviour
 
     [SerializeField]
     ScrollRect scrollRect;
+
+    [SerializeField]
+    List<Image> visibleImages;
+
+    bool visible = true;
 
     public Color defaultColor = Color.black;
     public int defaultSize = 14;
@@ -53,6 +61,8 @@ public class LogWindow : MonoBehaviour
         logText.SetSize(size);
         logText.SetColor(color);
         logText.SetText(txt);
+
+        logText.SetVisible(visible);
     }
 
     public void onEndEdit()
@@ -70,11 +80,30 @@ public class LogWindow : MonoBehaviour
         }
         inputField.text = "";
         
-        UiManager.Instance.skip1Frame = true;
+        UIManager.Instance.skip1Frame = true;
     }
 
     public void ChattingMode()
     {
         inputField.Select();
+    }
+
+    public void SetVisible(bool visible)
+    {
+        this.visible = visible;
+
+        foreach (var image in visibleImages)
+        {
+            image.enabled = visible;
+        }
+
+        int childCount = content.transform.childCount;
+
+        for(int i = 0; i < childCount; i++)
+        {
+            content.transform.GetChild(i).GetComponent<LogText>().SetVisible(visible);
+        }
+
+        inputFieldImage.enabled = visible;
     }
 }

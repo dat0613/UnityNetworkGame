@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UiManager : MonoBehaviour
+public class UIManager : MonoBehaviour
 {
     [SerializeField]
     GameTimer timer;
@@ -36,8 +36,10 @@ public class UiManager : MonoBehaviour
     [SerializeField]
     DieInformationPanel dieInformationPanel;
 
-    static UiManager instance = null;
-    public static UiManager Instance
+    bool visible = true;
+
+    static UIManager instance = null;
+    public static UIManager Instance
     {
         get
         {
@@ -47,10 +49,15 @@ public class UiManager : MonoBehaviour
 
     void Awake()
     {
-        if(instance == null)
+        if (instance == null)
             instance = this;
         else
             Destroy(gameObject);
+    }
+
+    void Start()
+    {
+        SetVisible(false);
     }
 
     void Update()
@@ -112,8 +119,8 @@ public class UiManager : MonoBehaviour
     {
         var killer = PlayerManager.GetPlayer(killerId);
         var victim = PlayerManager.GetPlayer(victimId);
-        
-        if(killer == null || victim == null)
+
+        if (killer == null || victim == null)
             return;
 
         killLogWindow.AddKillLog(killer.playerName, killer.team, victim.playerName, victim.team, headShot);
@@ -124,6 +131,7 @@ public class UiManager : MonoBehaviour
         var hitCircle = Instantiate(hitCirclePrefab);
         hitCircle.transform.SetParent(hitCircles);
         hitCircle.SetLocalScale();
+        hitCircle.SetVisible(visible);
 
         hitCircle.SetOption(hitPosition);
     }
@@ -133,14 +141,51 @@ public class UiManager : MonoBehaviour
         hitEffect.ViewEffect(damage);
     }
 
-    public void SetGameUi(int maxHp, int nowHp, float maxOverheat, float nowOverheat)
+    public void SetGameUI(int maxHp, int nowHp, float maxOverheat, float nowOverheat)
     {
         inGameUI.SetOption(maxHp, nowHp, maxOverheat, nowOverheat);
     }
 
-    public void UpdateGameUi(int nowHp, float nowOverheat)
+    public void UpdateGameUI(int nowHp, float nowOverheat)
     {
         inGameUI.SetNowHp(nowHp);
         inGameUI.SetNowOverheat(nowOverheat);
+    }
+
+    public void SetDieUI(string killerName, int myKillCount, int killersKillCount, float respawnTime)
+    {
+        dieInformationPanel.SetOption(killerName, myKillCount, killersKillCount, respawnTime);
+    }
+
+    public void ViewDieUI()
+    {
+        inGameUI.SetVisible(false);
+        logWindow.SetVisible(false);
+        dieInformationPanel.SetVisible(true);
+        crossHair.SetVisible(false);
+        killLogWindow.SetVisible(true);
+        hitEffect.SetVisible(true);
+    }
+
+    public void ViewGameUI()
+    {
+        inGameUI.SetVisible(true);
+        logWindow.SetVisible(true);
+        dieInformationPanel.SetVisible(false);
+        crossHair.SetVisible(true);
+        killLogWindow.SetVisible(true);
+        hitEffect.SetVisible(true);
+    }
+
+    public void SetVisible(bool visible)
+    {
+        this.visible = visible;
+
+        crossHair.SetVisible(visible);
+        logWindow.SetVisible(visible);
+        killLogWindow.SetVisible(visible);
+        hitEffect.SetVisible(visible);
+        inGameUI.SetVisible(visible);
+        dieInformationPanel.SetVisible(visible);
     }
 }

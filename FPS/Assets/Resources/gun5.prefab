@@ -4888,4 +4888,4 @@ MonoBehaviour:
   lerp: 0.5
   maxCoolingTime: 4
   heatPerShot: 2
-  coolingPerSecond: 0.6
+  coolingPerSecond: 0.7
