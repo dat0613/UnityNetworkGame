@@ -53,8 +53,97 @@ public class PlayerMove : MonoBehaviourMinNet
     float rotateTime = 0.0f;// 가장 최근에 동기화가 일어났던 때로 부터의 시간
     private bool isKeyInput = false;
 
+    public Material translucentMaterial;
+
     [SerializeField]
     List<SkinnedMeshRenderer> renderers;
+
+    List<int> layerList;// 자식들의 레이어
+    int layer;// 이 오브젝트의 레이어
+
+    List<Material> materialsList;
+
+    public void SetAsKiller(bool option)
+    {
+        if(option)
+        {// 해당 플레이어를 킬러로 지정하고 벽에 투시되게끔 함
+            SetLayer(10);
+            SetMaterial(translucentMaterial);
+        }
+        else
+        {// 벽에 투시되게끔 했던 설정을 초기화 시킴
+            LoadLayer();
+            LoadMaterial();
+        }
+    }
+
+    private void SetLayer(int layer)
+    {
+        var childCount = transform.childCount;
+        
+        for(int i = 0; i < childCount; i++)
+        {
+            transform.GetChild(i).gameObject.layer = layer;
+        }
+
+        gameObject.layer = layer;
+    }
+
+    private void SaveLayer()
+    {
+        var childCount = transform.childCount;
+        layerList = new List<int>(childCount);
+        
+        for(int i = 0; i < childCount; i++)
+        {
+            layerList.Add(transform.GetChild(i).gameObject.layer);
+        }
+
+        layer = gameObject.layer;
+    }
+
+    public void LoadLayer()
+    {
+        var childCount = layerList.Count;
+
+        for(int i = 0; i < childCount; i++)
+        {
+            transform.GetChild(i).gameObject.layer = layerList[i];
+        }
+
+        gameObject.layer = layer;
+    }
+
+    private void SetMaterial(Material material)
+    {
+        int rendererCount = renderers.Count;
+
+        for(int i = 0; i < rendererCount; i++)
+        {
+            renderers[i].material = material;
+        }
+    }
+
+    private void SaveMaterial()
+    {
+        int rendererCount = renderers.Count;
+        materialsList = new List<Material>();
+
+        for(int i = 0; i < rendererCount; i++)
+        {
+            materialsList.Add(renderers[i].material);
+        }
+    }
+
+    public void LoadMaterial()
+    {
+        int rendererCount = renderers.Count;
+
+        for(int i = 0; i < rendererCount; i++)
+        {
+            renderers[i].material = materialsList[i];
+        }
+    }
 
     void OnDestroy()
     {
@@ -77,6 +166,9 @@ public class PlayerMove : MonoBehaviourMinNet
 
     void Awake()
     {
+        SaveLayer();
+        SaveMaterial();
+
         chestTransform = animator.GetBoneTransform(HumanBodyBones.Chest);
         grip = GetComponent<GunGrip>();
         grip.gun = Instantiate(GunPrefab);
@@ -105,6 +197,7 @@ public class PlayerMove : MonoBehaviourMinNet
         nowHP = hp;
         ChangeTeam((Team)team);
         ChangeState(State.Alive);
+        UiManager.Instance.SetGameUi(this.maxHP, this.nowHP, grip.gun.maxOverheat, grip.gun.nowOverheat);
     }
 
     public override void OnSetID(int objectID)
@@ -158,10 +251,9 @@ public class PlayerMove : MonoBehaviourMinNet
         }
         else
         {
-            // Debug.Log("여기까지옴");
             headBox.tag = tag = "Untagged";
         }
-        // controller.isTrigger = !state;
+        controller.enabled = state;
     }
 
     void SetVisible(bool visible)// 렌더링 끄기
@@ -219,17 +311,16 @@ public class PlayerMove : MonoBehaviourMinNet
             SetCollision(true);
             grip.gun.gameObject.SetActive(true);
             animator.SetBool("Die", false);
-            controller.enabled = true;
             grip.gun.enabled = true;
             if(isMine)
-                FollowCamera.Instance.lookObject = null;
+                FollowCamera.Instance.SetKiller(null);
+            grip.gun.OverheatReset();// 과열 상태를 초기화 시킴
             break;
 
             case State.Die:
             SetCollision(false);
             grip.gun.gameObject.SetActive(false);
             animator.SetBool("Die", true);
-            controller.enabled = false;
             grip.gun.enabled = false;
             break;
         }
@@ -247,15 +338,18 @@ public class PlayerMove : MonoBehaviourMinNet
 
         if(isMine)
         {// 내가 죽음
-            Debug.Log(killer.gameObject);
-            Debug.Log("쥬ㅜㄱ음");
-            FollowCamera.Instance.lookObject = killer.gameObject;
+            FollowCamera.Instance.SetKiller(killer);
         }
         if(killer.isMine)
         {// 내가 죽임
-            CrossHair.Instance.KillFeedBack();
+            UiManager.Instance.KillFeedBack();
         }
         UiManager.Instance.AddKillLog(shooterID, objectId, isHead);
+    }
+
+    public void DieInformation(int shooterID, int myKillCount, int killersKillCount)
+    {
+
     }
 
     public void PlayerRestore(Vector3 position)
@@ -265,7 +359,7 @@ public class PlayerMove : MonoBehaviourMinNet
 
     public void HitSuccess(bool isHead, int damage)
     {
-        CrossHair.Instance.HitFeedBack(damage, isHead);
+        UiManager.Instance.HitFeedBack(damage, isHead);
 
         if(isHead)
         {
@@ -282,11 +376,13 @@ public class PlayerMove : MonoBehaviourMinNet
         nowHP -= damage;
         if (nowHP <= 0)
             nowHP = 0;
+        
 
         if(isMine)
         {
-            Debug.Log("내가 맞앗당");
             UiManager.Instance.AddHitCircle(shotPosition);
+            UiManager.Instance.ViewEffect(damage);
+            UiManager.Instance.UpdateGameUi(nowHP, grip.gun.nowOverheat);
         }
     }
 
@@ -539,6 +635,8 @@ public class PlayerMove : MonoBehaviourMinNet
                 {// 관전모드 업데이트
 
                 }
+
+                UiManager.Instance.UpdateGameUi(nowHP, grip.gun.nowOverheat);// 죽었을때는 게임 ui를 숨길것 이므로 살아있을때만 업데이트 하면 댐
             }
 
             if (state == State.Alive && (zoomMode || isKeyInput))

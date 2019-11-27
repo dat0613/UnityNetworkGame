@@ -15,23 +15,9 @@ public class CrossHair : MonoBehaviour
     private CrossHairFeedBack hitFeedBack;
     [SerializeField]
     private KillFeedBack killFeedBack;
-
-    private static CrossHair instance = null;
-    public static CrossHair Instance
-    {
-        get
-        {
-            return instance;
-        }
-    }
-
+    
     void Awake()
     {
-        if(instance == null)
-            instance = this;
-        else
-            Destroy(gameObject);
-
         crossHairImage.enabled = Visible;
     }
 

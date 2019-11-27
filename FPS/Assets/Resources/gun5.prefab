@@ -4883,3 +4883,9 @@ MonoBehaviour:
   trailPrefab: {fileID: -4480691273460796922, guid: 0ed2b75bff68bed489c27edbb185e15d,
     type: 3}
   meshRenderer: {fileID: 5345069750678216438}
+  maxOverheat: 30
+  nowOverheat: 0
+  lerp: 0.5
+  maxCoolingTime: 4
+  heatPerShot: 2
+  coolingPerSecond: 0.6

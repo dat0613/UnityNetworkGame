@@ -8,6 +8,9 @@ public class FollowCamera : MonoBehaviour
 {
     public GameObject targetObject = null;
 
+    [SerializeField]
+    Camera depthCamera = null;
+
     public float distance = 6.0f;
     public float zoomDistance = 1.0f;
     public float lerp = 10.0f;
@@ -27,7 +30,21 @@ public class FollowCamera : MonoBehaviour
 
     public bool mouseLock = true;
 
-    public GameObject lookObject = null;
+    private PlayerMove killer = null;
+
+    public void SetKiller(PlayerMove killer)
+    {
+        if(this.killer != null)
+        {// 미리 맞춰뒀던 옵션 초기화
+            this.killer.SetAsKiller(false);
+        }
+
+        this.killer = killer;
+        if(this.killer != null)
+        {// 새로운 킬러 초기화
+            this.killer.SetAsKiller(true);
+        }
+    }
 
     public void SetMouseLock(bool mouseLock)
     {
@@ -36,7 +53,7 @@ public class FollowCamera : MonoBehaviour
         if(mouseLock)
         {
             Cursor.lockState = CursorLockMode.Locked;
-            lookObject = null;
+            killer = null;
         }
         else
             Cursor.lockState = CursorLockMode.None;
@@ -64,6 +81,9 @@ public class FollowCamera : MonoBehaviour
         {
             cam = GetComponent<Camera>();
         }
+
+        // depthCamera.cullingMask = -1;
+        // depthCamera.cullingMask = (1 << 10);
     }
 
     float ClampAngle(float angle, float min, float max)
@@ -177,7 +197,7 @@ public class FollowCamera : MonoBehaviour
             return;
         }
         
-        if(lookObject == null)
+        if(killer == null)
         {
             if(mouseLock)
             {
@@ -195,7 +215,7 @@ public class FollowCamera : MonoBehaviour
         }
         else
         {
-            var direction =  lookObject.transform.position - transform.position;
+            var direction =  killer.transform.position - transform.position;
             Quaternion toRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, 5.0f * Time.deltaTime);
             // transform.LookAt(lookObject.transform.position);

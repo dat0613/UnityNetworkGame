@@ -8,6 +8,9 @@ public class UiManager : MonoBehaviour
     GameTimer timer;
 
     [SerializeField]
+    CrossHair crossHair;
+
+    [SerializeField]
     LogWindow logWindow;
 
     [SerializeField]
@@ -23,6 +26,15 @@ public class UiManager : MonoBehaviour
 
     [SerializeField]
     Transform hitCircles;
+
+    [SerializeField]
+    HitEffect hitEffect;
+
+    [SerializeField]
+    InGameUI inGameUI;
+
+    [SerializeField]
+    DieInformationPanel dieInformationPanel;
 
     static UiManager instance = null;
     public static UiManager Instance
@@ -66,6 +78,21 @@ public class UiManager : MonoBehaviour
         skip1Frame = false;
     }
 
+    public void HitFeedBack(int damage, bool isHeadShot)
+    {
+        crossHair.HitFeedBack(damage, isHeadShot);
+    }
+
+    public void KillFeedBack()
+    {
+        crossHair.KillFeedBack();
+    }
+
+    public void SetCrossHairVisible(bool Visible)
+    {
+        crossHair.SetVisible(Visible);
+    }
+
     public void SetTimer(float second)
     {
         timer.SetTimer(second);
@@ -99,5 +126,21 @@ public class UiManager : MonoBehaviour
         hitCircle.SetLocalScale();
 
         hitCircle.SetOption(hitPosition);
+    }
+
+    public void ViewEffect(int damage)
+    {
+        hitEffect.ViewEffect(damage);
+    }
+
+    public void SetGameUi(int maxHp, int nowHp, float maxOverheat, float nowOverheat)
+    {
+        inGameUI.SetOption(maxHp, nowHp, maxOverheat, nowOverheat);
+    }
+
+    public void UpdateGameUi(int nowHp, float nowOverheat)
+    {
+        inGameUI.SetNowHp(nowHp);
+        inGameUI.SetNowOverheat(nowOverheat);
     }
 }
