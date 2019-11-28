@@ -2,10 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using UnityEngine.UI;
+
 public class LoadingPanel : MonoBehaviour
 {
+    static LoadingPanel instance = null;
+
+    public static LoadingPanel Instance
+    {
+        get
+        {
+            return instance;
+        }
+    }
+
     [SerializeField]
     EasyLineRenderer easyLine;
+
+    [SerializeField]
+    Image backGroundImage;
 
     public float multiple = 1.0f;
     public float turnMultiple = 30.0f;
@@ -18,7 +33,20 @@ public class LoadingPanel : MonoBehaviour
 
     Coroutine coroutine = null;
 
-    public void Start()
+    bool stopOnNextFrame = false;// 비동기 함수에서 이 패널에 접근 해야 하는데 유니티가 혀용을 안해줌
+
+    void Awake()
+    {
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
+
+        Stop();
+    }
+    
+
+    public void LoadingStart(bool BackGroundVisible = false)
     {
         if(coroutine != null)
         {
@@ -26,11 +54,32 @@ public class LoadingPanel : MonoBehaviour
         }
 
         coroutine = StartCoroutine("DrawCircle");
+
+        backGroundImage.enabled = BackGroundVisible;
+    
+        easyLine.SetVisible(true);
+
+        stopOnNextFrame = false;
     }
 
-    public void Stop()
+    public void LoadingStop()
     {
+        stopOnNextFrame = true;
+    }
 
+    private void Stop()
+    {
+        if(coroutine != null)
+        {
+            StopCoroutine(coroutine);
+        }
+
+        coroutine = null;
+
+        backGroundImage.enabled = false;
+
+        easyLine.SetVisible(false);
+        stopOnNextFrame = false;
     }
 
     IEnumerator DrawCircle()
@@ -56,6 +105,12 @@ public class LoadingPanel : MonoBehaviour
                 easyLine.Angle = integerDegree % 360;
 
             easyLine.Angle += sin * turnMultiple * Time.deltaTime;
+
+            if(stopOnNextFrame)
+            {
+                Stop();
+                break;
+            }
 
             yield return null;
         }

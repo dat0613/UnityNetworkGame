@@ -20,18 +20,58 @@ public class EasyLineRenderer : MonoBehaviour
 
     public float Distance = 200.0f;
 
-    void Update()
+    Coroutine coroutine = null;
+
+    void Awake()
     {
-        line.positionCount = VertexCount;
 
-        float anglePerVertex = CenterAngle / VertexCount;// 한 정점 당 각도
-        float nowAngle = Angle - CenterAngle * 0.5f;
+        SetVisible(false);
+    }
 
-        for(int i = 0; i < VertexCount; i++)
+    IEnumerator DrawLine()
+    {
+        while(true)
         {
-            float rad = nowAngle * Mathf.Deg2Rad;
-            line.SetPosition(i, new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0.0f) * Distance);
-            nowAngle += anglePerVertex;
+            line.positionCount = VertexCount;
+            
+            float anglePerVertex = CenterAngle / VertexCount;// 한 정점 당 각도
+            float nowAngle = Angle - CenterAngle * 0.5f;
+
+            for(int i = 0; i < VertexCount; i++)
+            {
+                float rad = nowAngle * Mathf.Deg2Rad;
+                line.SetPosition(i, new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0.0f) * Distance);
+                nowAngle += anglePerVertex;
+            }
+
+            VertexCount = (int)CenterAngle - 20;
+
+            yield return null;
         }
+    }
+
+    public void SetVisible(bool visible)
+    {
+        line.enabled = visible;
+    
+        if(visible)
+        {
+            if(coroutine != null)
+            {
+                StopCoroutine(coroutine);
+            }
+
+            coroutine = StartCoroutine("DrawLine");
+        }
+        else
+        {
+            if(coroutine != null)
+            {
+                StopCoroutine(coroutine);
+            }
+
+            coroutine = null;
+        }
+    
     }
 }
