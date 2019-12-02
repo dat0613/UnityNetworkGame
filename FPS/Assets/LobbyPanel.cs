@@ -50,10 +50,16 @@ public class LobbyPanel : MonoBehaviourMinNetCallBack
         room.SetOption(roomName, roomState, roomId, nowUser, maxUser);
     }
 
+    public override void GetUserValue(string key, string value)
+    {
+        Debug.Log(key + " : " + value);
+    }
+
     public override void UserEnterRoom(int roomNumber, string roomName)
     {
         if(roomName == "Lobby")
         {
+            MinNetUser.GetUserValue("NickName");
             if(lobbyUserPrefab == null)
             {
             }

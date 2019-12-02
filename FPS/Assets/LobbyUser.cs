@@ -7,27 +7,7 @@ using UnityEngine.UI;
 
 public class LobbyUser : MonoBehaviourMinNet
 {
-
-
     LobbyPanel lobbyPanel;
-
-    // public void CreateRoom(int TeamNumber, bool CanBargeIn, bool OnlyHeadShot, int TicketCount, float RespawnTime, int DefaultDamage, float HeadShotDamageMultiple, int PlayerMaxHP)
-    // {
-    //     LoadingPanel.Instance.LoadingStart();
-
-    //     RPC(
-    //         "CreateRoom",
-    //         MinNetRpcTarget.Server,
-    //         TeamNumber,
-    //         CanBargeIn,
-    //         OnlyHeadShot,
-    //         TicketCount,
-    //         RespawnTime,
-    //         DefaultDamage,
-    //         HeadShotDamageMultiple,
-    //         PlayerMaxHP
-    //         );
-    // }
 
     void Awake()
     {

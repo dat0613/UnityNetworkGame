@@ -179,21 +179,6 @@ public class PlayerMove : MonoBehaviourMinNet
         nowHP = maxHP;
     }
 
-    void Start()
-    {
-        if (isMine)
-        {
-            FollowCamera.Instance.targetObject = gameObject;
-            InvokeRepeating("AutoSync", 0.0f, 0.1f);
-            InitAnimationSyncingSystem();
-            ChangeTeam(Team.Spectator);
-        }
-        else
-        {
-            PlayerManager.AddPlayer(this);
-        }
-    }
-
     public void Respawn(Vector3 position, int hp, int team)
     {
         transform.position = position;
@@ -209,10 +194,15 @@ public class PlayerMove : MonoBehaviourMinNet
 
     public override void OnSetID(int objectID)
     {
-        if(isMine)
+        if (isMine)
         {
-            PlayerManager.AddPlayer(this);
+            FollowCamera.Instance.targetObject = gameObject;
+            InvokeRepeating("AutoSync", 0.0f, 0.1f);
+            InitAnimationSyncingSystem();
+            ChangeTeam(Team.Spectator);
         }
+
+        PlayerManager.AddPlayer(this);
     }
 
     public void SyncPosition(Vector3 position, Vector3 chestRotation, int timeStamp)

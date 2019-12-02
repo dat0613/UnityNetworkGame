@@ -127,6 +127,7 @@ public class Connect : MonoBehaviourMinNetCallBack
     {
         if(roomName == "Main")// 서버에 접속하여 메인 룸에 들어옴
         {
+            MinNetUser.SetUserValue("NickName", nicknameField.text);
             // SceneManager.LoadScene("GameScene");
             MinNetUser.EnterRoom("Lobby");
         }
