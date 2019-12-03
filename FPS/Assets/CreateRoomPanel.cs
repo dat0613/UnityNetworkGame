@@ -137,7 +137,7 @@ public class CreateRoomPanel : MonoBehaviour
         }
         else
         {
-            LoadingPanel.Instance.LoadingStart();
+            LoadingPanel.Instance.LoadingStart(true);
 
             MinNetUser.CreateRoom
             (

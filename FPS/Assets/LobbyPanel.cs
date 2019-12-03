@@ -12,6 +12,7 @@ public class LobbyPanel : MonoBehaviourMinNetCallBack
     public Room roomPrefab;
     public Notification notificationPrefab;
 
+    private LobbyUser myUser;
 
     [SerializeField]
     Canvas canvas;
@@ -50,29 +51,22 @@ public class LobbyPanel : MonoBehaviourMinNetCallBack
         room.SetOption(roomName, roomState, roomId, nowUser, maxUser);
     }
 
-    public override void GetUserValue(string key, string value)
-    {
-        Debug.Log(key + " : " + value);
-    }
-
     public override void UserEnterRoom(int roomNumber, string roomName)
     {
         if(roomName == "Lobby")
         {
-            MinNetUser.GetUserValue("NickName");
             if(lobbyUserPrefab == null)
             {
             }
             else
             {
-                MinNetUser.Instantiate(lobbyUserPrefab, Vector3.zero, Quaternion.identity);
+                myUser = MinNetUser.Instantiate(lobbyUserPrefab, Vector3.zero, Quaternion.identity);
             }
         }
     }
 
     public override void UserEnterRoomFail(int roomNumber, string reason)
     {
-        Debug.Log("접속 실패 : " + reason);
         LoadingPanel.Instance.LoadingStop();
 
         var notification = Instantiate(notificationPrefab);
@@ -82,5 +76,7 @@ public class LobbyPanel : MonoBehaviourMinNetCallBack
         notification.SetLocalScale();
 
         notification.SetText(reason);
+
+        myUser.Refresh();
     }
 }

@@ -48,6 +48,10 @@ MonoBehaviour:
   objectId: -1
   minnetView: {fileID: 0}
   componentName: 
+  notificationPrefab: {fileID: 8004330081586131937, guid: 5172f5873f33c93459f9565b7c152e11,
+    type: 3}
+  nickName: 
+  isMaster: 0
 --- !u!114 &4568831722021511501
 MonoBehaviour:
   m_ObjectHideFlags: 0

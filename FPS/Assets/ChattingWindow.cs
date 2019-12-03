@@ -29,7 +29,7 @@ public class ChattingWindow : MonoBehaviour
 
     IEnumerator ScrollDown()
     {
-        yield return new WaitForEndOfFrame();
+        yield return new WaitForSeconds(0.05f);
         scrollRect.verticalNormalizedPosition = 0.0f;
     }
 
@@ -44,11 +44,19 @@ public class ChattingWindow : MonoBehaviour
 
     public void AddChat(string chat)
     {// 채팅창에 채팅 추가
+        AddChat(chat, new Color(0.196f, 0.196f, 0.196f, 1.0f));
+    }
+
+    public void AddChat(string chat, Color color)
+    {// 채팅창에 채팅 추가
         var logText = Instantiate(logTextPrefab, content.transform);
 
         logText.transform.SetAsLastSibling();
 
+        logText.SetSize(30);
+        logText.SetColor(color);
         logText.SetText(chat);
+        logText.SetWidth(520);
 
         StartCoroutine("ScrollDown");
     }

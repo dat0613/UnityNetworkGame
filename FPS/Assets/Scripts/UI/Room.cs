@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 using MinNetforUnity;
 
-public class Room : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
+public class Room : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler
 {
     [SerializeField]
     RectTransform rectTransform;
@@ -95,9 +95,8 @@ public class Room : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, I
         rectTransform.localPosition = Vector3.zero;
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+    public void OnPointerUp(PointerEventData eventData)
     {
-        Debug.Log(roomId);
         LoadingPanel.Instance.LoadingStart(true);
 
         MinNetUser.EnterRoom(roomId);

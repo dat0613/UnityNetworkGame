@@ -6,6 +6,9 @@ using UnityEngine.UI;
 public class LogText : MonoBehaviour
 {
     [SerializeField]
+    RectTransform rectTransform;
+ 
+    [SerializeField]
     Text text;
     
     public Color textColor = Color.black;
@@ -38,5 +41,12 @@ public class LogText : MonoBehaviour
     public void SetVisible(bool visible)
     {
         text.enabled = visible;
+    }
+
+    public void SetWidth(float width)
+    {
+        var size = rectTransform.sizeDelta;
+        size.x = width; 
+        rectTransform.sizeDelta = size;
     }
 }

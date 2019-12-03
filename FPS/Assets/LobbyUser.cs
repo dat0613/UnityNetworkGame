@@ -41,9 +41,8 @@ public class LobbyUser : MonoBehaviourMinNet
 
     public void Refresh()
     {
-        Debug.Log("새로고침 누름");
+        // Debug.Log("새로고침 누름");
         lobbyPanel.Refresh();
-
         RPC("GetRoomList", MinNetRpcTarget.Server);
     }
 

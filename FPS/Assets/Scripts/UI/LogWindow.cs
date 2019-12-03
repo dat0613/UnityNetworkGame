@@ -71,7 +71,7 @@ public class LogWindow : MonoBehaviour
 
         var str = inputField.text;
 
-        if(str.Equals(""))
+        if(string.IsNullOrEmpty(str) || string.IsNullOrWhiteSpace(str))
         {// 빈 텍스트는 보내지 않음
         }
         else
