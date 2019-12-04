@@ -59,6 +59,8 @@ public class PlayerMove : MonoBehaviourMinNet
     private bool isKeyInput = false;
 
     public Material translucentMaterial;
+    public Material redTeamMaterial;
+    public Material blueTeamMaterial;
 
     [SerializeField]
     List<SkinnedMeshRenderer> renderers;
@@ -67,6 +69,7 @@ public class PlayerMove : MonoBehaviourMinNet
     int layer;// 이 오브젝트의 레이어
 
     List<Material> materialsList;
+    Material gunMaterial;
 
     public void SetAsKiller(bool option)
     {
@@ -127,6 +130,8 @@ public class PlayerMove : MonoBehaviourMinNet
         {
             renderers[i].material = material;
         }
+
+        grip.gun.SetMaterial(material);
     }
 
     private void SaveMaterial()
@@ -138,6 +143,8 @@ public class PlayerMove : MonoBehaviourMinNet
         {
             materialsList.Add(renderers[i].material);
         }
+
+        gunMaterial = grip.gun.GetMaterial();
     }
 
     public void LoadMaterial()
@@ -148,6 +155,8 @@ public class PlayerMove : MonoBehaviourMinNet
         {
             renderers[i].material = materialsList[i];
         }
+
+        grip.gun.SetMaterial(gunMaterial);
     }
 
     void OnDestroy()
@@ -176,20 +185,34 @@ public class PlayerMove : MonoBehaviourMinNet
 
     void Awake()
     {
-        SaveLayer();
-        SaveMaterial();
-
         chestTransform = animator.GetBoneTransform(HumanBodyBones.Chest);
         grip = GetComponent<GunGrip>();
         grip.gun = Instantiate(GunPrefab);
         grip.gun.leftHand = leftHand;
         nowHP = maxHP;
+
+        SaveLayer();
+        SaveMaterial();
     }
 
     public void Respawn(Vector3 position, int hp, int team)
     {
         transform.position = position;
         nowHP = hp;
+
+        Team respawnTeam = (Team)team;
+        if(respawnTeam == Team.Red)
+        {
+            SetMaterial(redTeamMaterial);
+        }
+
+        if(respawnTeam == Team.Blue)
+        {
+            SetMaterial(blueTeamMaterial);
+        }
+
+        SaveMaterial();
+
         ChangeTeam((Team)team);
         ChangeState(State.Alive);
         if(isMine)

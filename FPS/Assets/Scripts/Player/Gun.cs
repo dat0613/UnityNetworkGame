@@ -46,6 +46,16 @@ public class Gun : MonoBehaviour
         meshRenderer.enabled = visible;
     }
 
+    public void SetMaterial(Material material)
+    {
+        meshRenderer.material = material;
+    }
+
+    public Material GetMaterial()
+    {
+        return meshRenderer.material;
+    }
+
     public void OverheatReset()
     {
         nowOverheat = 0.0f;

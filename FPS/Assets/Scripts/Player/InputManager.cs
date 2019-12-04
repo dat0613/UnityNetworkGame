@@ -55,4 +55,9 @@ public class InputManager : MonoBehaviour
             return focus;
         }
     }
+
+    void OnDestroy()
+    {
+        ChangeFocus(InputFocus.Chatting);
+    }
 }

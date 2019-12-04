@@ -27,6 +27,12 @@ public class ReadyUser : MonoBehaviourMinNet
         chattingWindow.AddChat(chat);
     }
 
+    void Awake()
+    {
+        var buttonLayout = GameObject.Find("ButtonLayout");
+        StartButton = buttonLayout.transform.GetChild(0).GetComponent<Button>();
+    }
+
     public override void OnSetID(int objectID)
     {
         chattingWindow = GameObject.Find("LogWindow").GetComponent<ChattingWindow>();
@@ -35,11 +41,9 @@ public class ReadyUser : MonoBehaviourMinNet
         
         if(isMine)
         {
-            chattingWindow.myUser = this;
-            var buttonLayout = GameObject.Find("ButtonLayout");
-            StartButton = buttonLayout.transform.GetChild(0).GetComponent<Button>();
             StartButton.onClick.AddListener(delegate { ClickStartButton(); });
             GameObject.Find("ChangeTeamButton").GetComponent<Button>().onClick.AddListener(delegate { ClickChangeTeamButton(); });
+            chattingWindow.myUser = this;
         }
     }
 
@@ -68,7 +72,9 @@ public class ReadyUser : MonoBehaviourMinNet
         this.isMaster = isMaster;
         readyRoomPanel.Reload(team);
         readyRoomPanel.SetMaster(isMaster);
-        StartButton.gameObject.SetActive(isMaster);
+        
+        if(isMine)
+            StartButton.gameObject.SetActive(isMaster);
     }
 
     public void SetTeam(int teamNumber)

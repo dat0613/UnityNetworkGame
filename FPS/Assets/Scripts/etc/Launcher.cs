@@ -40,6 +40,6 @@ public class Launcher : MonoBehaviourMinNetCallBack
 
     void OnDestroy()
     {
-        MinNetUser.DisconnectToServer();    
+        // MinNetUser.DisconnectToServer();    
     }
 }

@@ -48,6 +48,8 @@ MonoBehaviour:
   objectId: -1
   minnetView: {fileID: 0}
   componentName: 
+  resultWindowPrefab: {fileID: 7132082737297812508, guid: 0e3f73ad676c6a849aaafef83e98ed7e,
+    type: 3}
 --- !u!114 &3299433851832738425
 MonoBehaviour:
   m_ObjectHideFlags: 0
