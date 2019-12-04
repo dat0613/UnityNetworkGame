@@ -58,7 +58,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.078431375}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.39215687}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -284,6 +284,8 @@ MonoBehaviour:
   arrowImage: {fileID: 3909872476563520048}
   backgroundImage: {fileID: 8780037575776917726}
   rectTransform: {fileID: 2968074433967211900}
+  destroyMode: 0
+  lerp: 0
 --- !u!1 &2968074434131711385
 GameObject:
   m_ObjectHideFlags: 0

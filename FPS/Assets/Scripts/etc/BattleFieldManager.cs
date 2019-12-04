@@ -10,32 +10,20 @@ public class BattleFieldManager : MonoBehaviourMinNet
 
     BattleFieldState state = BattleFieldState.MAX;
 
-    public void ChangeState(BattleFieldState state, int time)
+    public void SetMaxTicket(int maxTicket)
     {
-        UIManager.Instance.SetTimer(time * 0.001f);
-
-        this.state = state;
-
-        switch (state)
-        {
-            case BattleFieldState.GameReady:
-            
-                break;
-
-            case BattleFieldState.GameStart:
-
-                break;
-
-            case BattleFieldState.GameEnd:
-
-                break;
-        }
-
+        UIManager.Instance.SetMaxTicket(maxTicket);
     }
 
-    public void SyncState(int state, int time)
+    public void SetNowTicket(int blueTeamTicketCount, int redTeamTicketCount)
     {
-        ChangeState((BattleFieldState)state, time);
+        UIManager.Instance.SetNowTicket(blueTeamTicketCount, redTeamTicketCount);
+    }
+
+    public void GameEnd(int winnerTeamNumber)
+    {
+        var winner = (PlayerMove.Team)winnerTeamNumber;
+
 
     }
 }

@@ -61,11 +61,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af4f96b3c2b117940aa25ebff8bfc0ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Visible: 1
+  visible: 1
   crossHairImage: {fileID: 6320179121430906067}
   headShotFeedBack: {fileID: 6320179121454704597}
   hitFeedBack: {fileID: 6320179121158715481}
   killFeedBack: {fileID: 6320179121478995413}
+  killTextPrefab: {fileID: 4748033365896439795, guid: e5d73f6705818c745a69fd669a37e2f2,
+    type: 3}
 --- !u!1 &6320179121430906093
 GameObject:
   m_ObjectHideFlags: 0
@@ -488,17 +490,17 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 7774621545402273271, guid: a37abb442981a4d4b8569302daa1f4e8,
-        type: 3}
-      propertyPath: m_SortingOrder
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7774621545543416399, guid: a37abb442981a4d4b8569302daa1f4e8,
         type: 3}
       propertyPath: m_SortingOrder
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7774621545561992455, guid: a37abb442981a4d4b8569302daa1f4e8,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7774621545402273271, guid: a37abb442981a4d4b8569302daa1f4e8,
         type: 3}
       propertyPath: m_SortingOrder
       value: 1

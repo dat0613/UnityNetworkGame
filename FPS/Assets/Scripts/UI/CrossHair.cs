@@ -16,6 +16,8 @@ public class CrossHair : MonoBehaviour
     [SerializeField]
     private KillFeedBack killFeedBack;
     
+    public KillText killTextPrefab;
+    
     void Awake()
     {
         crossHairImage.enabled = visible;
@@ -38,13 +40,18 @@ public class CrossHair : MonoBehaviour
         }
     }
 
-    public void KillFeedBack()
+    public void KillFeedBack(string victimNickName)
     {
         if (!visible)
             return;
 
         killFeedBack.FeedBack();
         SoundManager.Instance.PlaySound("Kill");
+
+        var killText = Instantiate(killTextPrefab, transform);
+        killText.SetLocalScale();
+        killText.transform.SetAsLastSibling();
+        killText.SetOption(victimNickName);        
     }
 
     public void SetVisible(bool visible)

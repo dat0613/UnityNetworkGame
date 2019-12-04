@@ -90,9 +90,14 @@ public class UIManager : MonoBehaviour
         crossHair.HitFeedBack(damage, isHeadShot);
     }
 
-    public void KillFeedBack()
+    public void SetNickName(string nickName)
     {
-        crossHair.KillFeedBack();
+        inGameUI.SetNickName(nickName);
+    }
+
+    public void KillFeedBack(string victimNickName)
+    {
+        crossHair.KillFeedBack(victimNickName);
     }
 
     public void SetCrossHairVisible(bool Visible)
@@ -150,6 +155,16 @@ public class UIManager : MonoBehaviour
     {
         inGameUI.SetNowHp(nowHp);
         inGameUI.SetNowOverheat(nowOverheat);
+    }
+
+    public void SetMaxTicket(int maxTicket)
+    {
+        inGameUI.SetMaxTicket(maxTicket);
+    }
+
+    public void SetNowTicket(int blueTeamNowTicket, int redTeamNowTicket)
+    {
+        inGameUI.SetNowTicket(blueTeamNowTicket, redTeamNowTicket);
     }
 
     public void SetDieUI(string killerName, int myKillCount, int killersKillCount, float respawnTime)

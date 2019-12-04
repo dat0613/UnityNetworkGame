@@ -146,6 +146,7 @@ public class CreateRoomPanel : MonoBehaviour
                 nowTeamNumber,
                 nowCanBargeIn,
                 nowOnlyHeadShot,
+                nowTicketCount,
                 nowRespawnTime,
                 nowDefaultDamage,
                 nowHeadShotDamageMultiple,

@@ -40,6 +40,8 @@ public class PlayerMove : MonoBehaviourMinNet
     private Vector3 targetChestRotation;
     private Quaternion ChestQuaternion;
 
+    bool allow = false;
+
     private int lastTimeStamp = 0;
 
     private bool zoomMode = false;
@@ -155,16 +157,21 @@ public class PlayerMove : MonoBehaviourMinNet
             Destroy(grip.gun.gameObject);
     }
 
-    public void OnInstantiate(int team, int state, int nowHP)
+    public void OnInstantiate(int team, int state, int maxHP, string nickName)
     {// 원래 게임 룸에 있던 객체들의 동기화
         Team changeTeam = (Team)team;
         State changeState = (State)state;
 
-        Debug.Log("동기화 : " + changeTeam.ToString() + ", " + changeState.ToString());
+        playerName = nickName;
+
+        Debug.Log(objectId + " : " + nickName);
+
+        if(isMine)
+            UIManager.Instance.SetNickName(nickName);
         
         ChangeTeam(changeTeam);
         ChangeState(changeState);
-        this.nowHP = nowHP;
+        this.maxHP = maxHP;
     }
 
     void Awake()
@@ -343,7 +350,7 @@ public class PlayerMove : MonoBehaviourMinNet
         }
         if(killer.isMine)
         {// 내가 죽임
-            UIManager.Instance.KillFeedBack();
+            UIManager.Instance.KillFeedBack(playerName);
         }
         UIManager.Instance.AddKillLog(shooterID, objectId, isHead);
     }
@@ -423,6 +430,9 @@ public class PlayerMove : MonoBehaviourMinNet
 
     void PlayerInput()
     {
+        if(!allow)
+            return;
+            
         if (Input.GetKey(KeyCode.Mouse1))
         {
             if (!zoomMode)
@@ -664,7 +674,9 @@ public class PlayerMove : MonoBehaviourMinNet
             transform.position += movepersecond * Time.fixedDeltaTime;
 
             if (zoomMode || isKeyInput)
-                transform.rotation = Quaternion.Euler(0.0f, ChestQuaternion.eulerAngles.y, 0.0f);
+            {
+                transform.rotation = Quaternion.Euler(0.0f, ChestQuaternion.eulerAngles.y - setting.y, 0.0f);
+            }
         }
     }
 
@@ -681,6 +693,7 @@ public class PlayerMove : MonoBehaviourMinNet
             }
 
             sendChestRotation = chestTransform.rotation.eulerAngles;
+            // Debug.Log(sendChestRotation);
         }
         else
         {
@@ -697,5 +710,20 @@ public class PlayerMove : MonoBehaviourMinNet
 
             rotateTime += Time.deltaTime;
         };
+    }
+
+    public void SetMaxHP(int maxHP)
+    {
+        this.maxHP = nowHP = maxHP;
+
+        if(isMine)
+        {// 최대 체력이 갱신되었으므로 UI에 반영 시킴
+            UIManager.Instance.SetGameUI(this.maxHP, this.nowHP, grip.gun.maxOverheat, grip.gun.nowOverheat);
+        }
+    }
+
+    public void SetControllAllow(bool allow)
+    {
+        this.allow = allow;
     }
 }

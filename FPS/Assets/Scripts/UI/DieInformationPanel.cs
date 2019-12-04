@@ -42,8 +42,8 @@ public class DieInformationPanel : MonoBehaviour
 
     public void SetOption(string killerName, int myKillCount, int killersKillCount, float respawnTime)
     {
-        killerNameText.text = "<color=#ff0000>" + killerName + "</color> 에게 죽음";
-        killCountText.text = "상대와의 전적 <color=#0000ff>" + myKillCount + "</color> : <color=#ff0000>" + killersKillCount + "</color>";
+        killerNameText.text = "<color=#AF0311>" + killerName + "</color> 에게 죽음";
+        killCountText.text = "상대와의 전적 <color=#484ac7>" + myKillCount + "</color> : <color=#AF0311>" + killersKillCount + "</color>";
 
         StartCoroutine("FillRespawnBar");
 

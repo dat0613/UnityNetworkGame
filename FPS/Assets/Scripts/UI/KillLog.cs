@@ -62,11 +62,11 @@ public class KillLog : MonoBehaviour
         switch(team)
         {
             case PlayerMove.Team.Blue:
-            retval = Color.blue;
+            retval = new Color(84.0f / 255.0f, 119.0f / 255.0f, 151.0f / 255.0f, 1.0f);
             break;
 
             case PlayerMove.Team.Red:
-            retval = Color.red;
+            retval = new Color(223.0f / 255.0f, 100.0f / 255.0f, 100.0f / 255.0f, 1.0f);
             break;
         }
 
