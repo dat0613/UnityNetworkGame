@@ -75,6 +75,7 @@ public class Gun : MonoBehaviour
                 canShot = false;
                 
                 nowOverheat = maxOverheat;
+                SoundManager.Instance.PlaySound("OverHeat");
                 yield return new WaitForSeconds(maxCoolingTime);
                 nowOverheat = maxOverheat - 1.0f;
             }
@@ -83,7 +84,7 @@ public class Gun : MonoBehaviour
                 canShot = true;
 
                 coolingPoint += Time.deltaTime * coolingPerSecond;
-                nowOverheat -= coolingPoint;
+                nowOverheat -= coolingPoint * Time.deltaTime;
                 
                 if(nowOverheat <= 0.0f)
                 {
@@ -91,7 +92,6 @@ public class Gun : MonoBehaviour
                     coolingPoint = 0.0f;
                 }
 
-                // nowOverheat = Mathf.Lerp(nowOverheat, 0.0f, Time.deltaTime * lerp);
                 yield return 0;
             }
         }
@@ -150,7 +150,7 @@ public class Gun : MonoBehaviour
 
         trail.SetOption(endPoint, 300, local);
 
-        SoundManager.Instance.PlaySound("Shot", muzzlePosition);
+        SoundManager.Instance.PlaySound("Shot", muzzlePosition, 45.0f, 0.6f);
     }
 
     public void SetTransform(Transform tr)

@@ -15,6 +15,8 @@ public class PlayerMove : MonoBehaviourMinNet
     public Team team = Team.Spectator;
     public State state = State.Die;
 
+    public float warpDistance = 1.0f;
+
     [SerializeField]
     private GameObject headBox;
 
@@ -35,20 +37,29 @@ public class PlayerMove : MonoBehaviourMinNet
     public int maxHP = 150;
     public int nowHP;
 
+    private Vector3 lastTargetPosition;
     private Vector3 targetPosition;
     private Vector3 sendChestRotation;
     private Vector3 targetChestRotation;
     private Quaternion ChestQuaternion;
 
+    public float limit;
+
     bool allow = false;
 
+    private int nowTimeStamp = 0;
     private int lastTimeStamp = 0;
+
+    float lastSyncLocalTime = 0.0f;
+    float nowSyncLocalTime = 0.0f;
+
+    int rotateSign = 0;
+    float lastY = 0.0f;
 
     private bool zoomMode = false;
 
     private List<bool> lastAnimationState;
 
-    private Vector3 movepersecond;
     private Vector3 rotatepersecond;
 
     public int kill;
@@ -171,9 +182,7 @@ public class PlayerMove : MonoBehaviourMinNet
         Team changeTeam = (Team)team;
         State changeState = (State)state;
 
-        playerName = nickName;
-
-        Debug.Log(objectId + " : " + nickName);
+        this.playerName = nickName;
 
         if(isMine)
             UIManager.Instance.SetNickName(nickName);
@@ -197,7 +206,14 @@ public class PlayerMove : MonoBehaviourMinNet
 
     public void Respawn(Vector3 position, int hp, int team)
     {
-        transform.position = position;
+        SoundManager.Instance.PlaySound("Respawn", position, 8.0f);
+        
+        if(isMine)
+        {
+            transform.position = position;
+            AutoSync();
+        }
+        
         nowHP = hp;
 
         Team respawnTeam = (Team)team;
@@ -215,6 +231,7 @@ public class PlayerMove : MonoBehaviourMinNet
 
         ChangeTeam((Team)team);
         ChangeState(State.Alive);
+
         if(isMine)
         {
             UIManager.Instance.SetGameUI(this.maxHP, this.nowHP, grip.gun.maxOverheat, grip.gun.nowOverheat);
@@ -227,7 +244,7 @@ public class PlayerMove : MonoBehaviourMinNet
         if (isMine)
         {
             FollowCamera.Instance.targetObject = gameObject;
-            InvokeRepeating("AutoSync", 0.0f, 0.1f);
+            InvokeRepeating("AutoSync", 0.0f, 0.2f);
             InitAnimationSyncingSystem();
             ChangeTeam(Team.Spectator);
         }
@@ -235,45 +252,44 @@ public class PlayerMove : MonoBehaviourMinNet
         PlayerManager.AddPlayer(this);
     }
 
-    public void SyncPosition(Vector3 position, Vector3 chestRotation, int timeStamp)
+    public void SyncPosition(Vector3 position, Vector3 chestRotation, int rotateSign, int timeStamp)
     {
-        if(Vector3.Distance(position, transform.position) > 10)
+        if(Vector3.Distance(position, transform.position) > warpDistance)
         {
             transform.position = position;
         }
-        else
-        {
-            targetPosition = position;
-            targetChestRotation = chestRotation;
 
-            timeDifference = timeStamp - lastTimeStamp;
-            lastTimeStamp = timeStamp;
+        lastSyncLocalTime = nowSyncLocalTime;
+        nowSyncLocalTime = Time.time;
 
-            Vector3 rotationGap = chestRotation - chestTransform.rotation.eulerAngles;
+        lastTargetPosition = targetPosition;
+        targetPosition = position;
+        targetChestRotation = chestRotation;
 
-            if(rotationGap.y > 180.0f)      // 각도가 갑자기 확 돌아가는것을 막기위한 작업
-                rotationGap.y -= 360.0f;
-            if(rotationGap.y < -180.0f)
-                rotationGap.y += 360.0f;
-            if(rotationGap.x > 180.0f)
-                rotationGap.x -= 360.0f;
-            if(rotationGap.x < -180.0f)
-                rotationGap.x += 360.0f;
-            if(rotationGap.z > 180.0f)
-                rotationGap.z -= 360.0f;
-            if(rotationGap.z < -180.0f)
-                rotationGap.z += 360.0f;
+        timeDifference = timeStamp - lastTimeStamp;
 
-            rotateTime = 0.0f;
+        lastTimeStamp = nowTimeStamp;
+        nowTimeStamp = timeStamp;
 
-            Vector3 rotatePer1ms = rotationGap / timeDifference;
+        Vector3 rotationGap = chestRotation - chestTransform.rotation.eulerAngles;
 
-            Vector3 positionGap = position - transform.position;
-            Vector3 movePer1ms = positionGap / timeDifference;
+        if (rotationGap.y > 180.0f)      // 각도가 갑자기 확 돌아가는것을 막기위한 작업
+            rotationGap.y -= 360.0f;
+        if (rotationGap.y < -180.0f)
+            rotationGap.y += 360.0f;
+        if (rotationGap.x > 180.0f)
+            rotationGap.x -= 360.0f;
+        if (rotationGap.x < -180.0f)
+            rotationGap.x += 360.0f;
+        if (rotationGap.z > 180.0f)
+            rotationGap.z -= 360.0f;
+        if (rotationGap.z < -180.0f)
+            rotationGap.z += 360.0f;
 
-            movepersecond = movePer1ms * 1000;
-            rotatepersecond = rotatePer1ms * 1000;
-        }
+        rotateTime = 0.0f;
+
+        Vector3 rotatePer1ms = rotationGap / timeDifference;
+        rotatepersecond = rotatePer1ms * 1000;
     }
 
     void SetCollision(bool state)
@@ -437,7 +453,7 @@ public class PlayerMove : MonoBehaviourMinNet
 
     void AutoSync()
     {
-        RPC("SyncPosition", MinNetRpcTarget.Others, transform.position, sendChestRotation, MinNetUser.ServerTime);
+        RPCudp("SyncPosition", MinNetRpcTarget.Others, transform.position, sendChestRotation, rotateSign, MinNetUser.ServerTime);
     }
 
     public void ShotSync(int punch, Vector3 endPoint, Vector3 shotPosition, Vector3 muzzlePosition)
@@ -449,6 +465,18 @@ public class PlayerMove : MonoBehaviourMinNet
         
         grip.gun.CreateTrail(endPoint, muzzlePosition, isMine);
         // transform.position = shotPosition;
+    }
+
+    public void PlayRandomFootstep()
+    {
+        string clipName = "";
+
+        if(Random.Range(0, 2) == 0)
+            clipName = "FootStep1";
+        else
+            clipName = "FootStep2";
+
+        SoundManager.Instance.PlaySound(clipName, transform.position, 10.0f, 0.1f);
     }
 
     void PlayerInput()
@@ -694,7 +722,19 @@ public class PlayerMove : MonoBehaviourMinNet
         }
         else
         {
-            transform.position += movepersecond * Time.fixedDeltaTime;
+            // transform.position += movepersecond * Time.fixedDeltaTime;
+            var timedif = 0.2f;
+            var ratio = 0.0f;
+            var nowtime = Time.time - timedif;
+
+            if(timedif < 0.01f)
+                ratio = 0.0f;
+            else
+                ratio = (nowtime - lastSyncLocalTime) / timedif; 
+
+            var movepos = (targetPosition - lastTargetPosition);
+            var pos = ratio * movepos + lastTargetPosition;
+            transform.position = pos;
 
             if (zoomMode || isKeyInput)
             {
@@ -709,6 +749,10 @@ public class PlayerMove : MonoBehaviourMinNet
         {
             AnimationSyncingSystem();
 
+            float degree = chestTransform.eulerAngles.y;
+            
+            lastY = degree;
+
             if(state == State.Alive)
             {
                 chestTransform.LookAt(Camera.main.transform.forward * 10 + Camera.main.transform.position);
@@ -716,7 +760,18 @@ public class PlayerMove : MonoBehaviourMinNet
             }
 
             sendChestRotation = chestTransform.rotation.eulerAngles;
-            // Debug.Log(sendChestRotation);
+        
+            rotateSign = (int)(sendChestRotation.y - lastY);
+            
+            // Debug.Log(rotateSign + ", " + sendChestRotation.y + ", " + lastY);
+            if(rotateSign < 0)
+            {
+                // Debug.Log("오른쪽으로 회전");
+            }
+            if(rotateSign > 0)
+            {
+                // Debug.Log("왼쪽으로 회전");
+            }
         }
         else
         {

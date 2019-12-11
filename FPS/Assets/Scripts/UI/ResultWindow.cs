@@ -20,11 +20,13 @@ public class ResultWindow : MonoBehaviour
         {
             colorCode = "FDD755";
             text = "승리!";
+            SoundManager.Instance.PlaySound("Win");
         }
         else
         {
             colorCode = "AF0311";
             text = "패배";
+            SoundManager.Instance.PlaySound("Defeat");
         }
 
         Time.timeScale = 0.5f;

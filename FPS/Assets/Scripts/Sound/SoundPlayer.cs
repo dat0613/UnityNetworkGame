@@ -41,12 +41,12 @@ public class SoundPlayer : MonoBehaviour
             Debug.Log(ClipName + " 는 없습니다");
     }
 
-    public void PlaySound(string ClipName, Vector3 position)
+    public void PlaySound(string ClipName, Vector3 position, float maxDistance, float volume)
     {
         AudioClip clip = null;
         if(clipDictionary.TryGetValue(ClipName, out clip))
         {
-            pool.Pop().GetComponent<SoundObject>().PlaySound(clip, position);
+            pool.Pop().GetComponent<SoundObject>().PlaySound(clip, position, maxDistance, volume);
         }
         else
             Debug.Log(ClipName + " 는 없습니다");

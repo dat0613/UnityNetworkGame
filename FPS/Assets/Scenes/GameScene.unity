@@ -2755,7 +2755,7 @@ GameObject:
   - component: {fileID: 196803723}
   m_Layer: 8
   m_Name: GameObject
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17924,7 +17924,7 @@ GameObject:
   - component: {fileID: 1183106261}
   m_Layer: 8
   m_Name: GameObject
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23150,6 +23150,91 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7808983513831024445, guid: 21451b34526aeca4eb2a9759d50a88fb,
+        type: 3}
+      propertyPath: clipList.Array.size
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7808983513831024445, guid: 21451b34526aeca4eb2a9759d50a88fb,
+        type: 3}
+      propertyPath: clipList.Array.data[4].key
+      value: Respawn
+      objectReference: {fileID: 0}
+    - target: {fileID: 7808983513831024445, guid: 21451b34526aeca4eb2a9759d50a88fb,
+        type: 3}
+      propertyPath: clipList.Array.data[4].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: be920937fe53d6347ad13c1da3e9fd3e, type: 3}
+    - target: {fileID: 7808983513831024445, guid: 21451b34526aeca4eb2a9759d50a88fb,
+        type: 3}
+      propertyPath: clipList.Array.data[5].key
+      value: FootStep1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7808983513831024445, guid: 21451b34526aeca4eb2a9759d50a88fb,
+        type: 3}
+      propertyPath: clipList.Array.data[5].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 91fb0eae191d296489a8ef76d7ec1ebd, type: 3}
+    - target: {fileID: 7808983513831024445, guid: 21451b34526aeca4eb2a9759d50a88fb,
+        type: 3}
+      propertyPath: clipList.Array.data[6].key
+      value: FootStep2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7808983513831024445, guid: 21451b34526aeca4eb2a9759d50a88fb,
+        type: 3}
+      propertyPath: clipList.Array.data[6].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: d85c50028a4c821459f9d5e32f254f8b, type: 3}
+    - target: {fileID: 7808983513831024445, guid: 21451b34526aeca4eb2a9759d50a88fb,
+        type: 3}
+      propertyPath: clipList.Array.data[7].key
+      value: Win
+      objectReference: {fileID: 0}
+    - target: {fileID: 7808983513831024445, guid: 21451b34526aeca4eb2a9759d50a88fb,
+        type: 3}
+      propertyPath: clipList.Array.data[7].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 94a41b89fb086864f9789339d704589e, type: 3}
+    - target: {fileID: 7808983513831024445, guid: 21451b34526aeca4eb2a9759d50a88fb,
+        type: 3}
+      propertyPath: clipList.Array.data[8].key
+      value: Defeat
+      objectReference: {fileID: 0}
+    - target: {fileID: 7808983513831024445, guid: 21451b34526aeca4eb2a9759d50a88fb,
+        type: 3}
+      propertyPath: clipList.Array.data[8].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: d9370ab4a1a4ba142943db73cdbeaadf, type: 3}
+    - target: {fileID: 7808983513831024445, guid: 21451b34526aeca4eb2a9759d50a88fb,
+        type: 3}
+      propertyPath: clipList.Array.data[9].key
+      value: Chatting
+      objectReference: {fileID: 0}
+    - target: {fileID: 7808983513831024445, guid: 21451b34526aeca4eb2a9759d50a88fb,
+        type: 3}
+      propertyPath: clipList.Array.data[9].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 70bab75e5bedd384d839f265f5a93a4c, type: 3}
+    - target: {fileID: 7808983513831024445, guid: 21451b34526aeca4eb2a9759d50a88fb,
+        type: 3}
+      propertyPath: clipList.Array.data[10].key
+      value: OverHeat
+      objectReference: {fileID: 0}
+    - target: {fileID: 7808983513831024445, guid: 21451b34526aeca4eb2a9759d50a88fb,
+        type: 3}
+      propertyPath: clipList.Array.data[10].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: e58ec20faecd49648b740c4ec4926121, type: 3}
+    - target: {fileID: 7808983513831024446, guid: 21451b34526aeca4eb2a9759d50a88fb,
+        type: 3}
+      propertyPath: MaxDistance
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7808983513831024446, guid: 21451b34526aeca4eb2a9759d50a88fb,
+        type: 3}
+      propertyPath: rolloffMode
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21451b34526aeca4eb2a9759d50a88fb, type: 3}

@@ -26,6 +26,8 @@ public class FollowCamera : MonoBehaviour
     public float height;
     public bool viewMode = false;
 
+    public float multiple = 150.0f;
+
     public Camera cam = null;
 
     public bool mouseLock = true;
@@ -177,7 +179,19 @@ public class FollowCamera : MonoBehaviour
             }
         }
 
-        Debug.DrawRay(transform.position, retVal - transform.position, Color.red);
+
+        RaycastHit info;
+
+        if(hitObject != null && Physics.Raycast(startPosition, retVal - startPosition, out info, Mathf.Infinity, layer))
+        {
+            if(info.collider.gameObject != hitObject)
+            {
+                retVal = info.point;
+                hitObject = info.collider.gameObject;
+            }
+        }
+
+        Debug.DrawRay(startPosition, retVal - startPosition, Color.red);
 
         return retVal;
     }
@@ -192,6 +206,12 @@ public class FollowCamera : MonoBehaviour
 
     void LateUpdate()
     {
+        if(Input.GetKeyDown(KeyCode.LeftArrow))
+            multiple -= 10.0f;
+            
+        if(Input.GetKeyDown(KeyCode.RightArrow))
+            multiple += 10.0f;
+
         if(targetObject == null)
         {
             return;
@@ -201,8 +221,8 @@ public class FollowCamera : MonoBehaviour
         {
             if(mouseLock)
             {
-                vector.y += Input.GetAxis("Mouse X") * 150.0f * Time.deltaTime;
-                vector.x -= Input.GetAxis("Mouse Y") * 150.0f * Time.deltaTime;
+                vector.y += Input.GetAxis("Mouse X") * multiple * Time.deltaTime;
+                vector.x -= Input.GetAxis("Mouse Y") * multiple * Time.deltaTime;
 
                 nowDistance = Mathf.Lerp(nowDistance, targetDistance, Time.fixedDeltaTime * lerp);
                 center.y = Mathf.Lerp(center.y, targetZoomCenterY, Time.fixedDeltaTime * lerp);

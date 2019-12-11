@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2391617581587491131}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.1849, z: 1.5}
+  m_LocalPosition: {x: 0, y: 0.185, z: 0.578}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7226605363491543097}
@@ -4887,5 +4887,5 @@ MonoBehaviour:
   nowOverheat: 0
   lerp: 0.5
   maxCoolingTime: 4
-  heatPerShot: 2
-  coolingPerSecond: 0.7
+  heatPerShot: 1
+  coolingPerSecond: 5

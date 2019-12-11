@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3692719458534438070}
   - component: {fileID: 5501969430538476210}
   - component: {fileID: 8499308856788773230}
-  - component: {fileID: 1108827880097962342}
+  - component: {fileID: 313967001306134638}
   m_Layer: 0
   m_Name: SoundObject
   m_TagString: Untagged
@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   poolingObject: {fileID: 8499308856788773230}
-  source: {fileID: 1108827880097962342}
+  source: {fileID: 313967001306134638}
 --- !u!114 &8499308856788773230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,7 +60,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parent: {fileID: 0}
---- !u!82 &1108827880097962342
+--- !u!82 &313967001306134638
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -80,8 +80,8 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 0
+  MaxDistance: 27.27
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -116,7 +116,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0

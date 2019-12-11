@@ -956,6 +956,7 @@ MonoBehaviour:
   playerName: 
   team: 4
   state: 0
+  warpDistance: 4
   headBox: {fileID: 1415193793764003612}
   controller: {fileID: 5671903266220006586}
   animator: {fileID: 1462711073322712869}
@@ -966,6 +967,7 @@ MonoBehaviour:
   leftHand: {fileID: 1462711072688792030}
   maxHP: 150
   nowHP: 0
+  limit: 0
   kill: 0
   death: 0
   translucentMaterial: {fileID: 2100000, guid: 42ae623d5551d3f46b02e83ba6eb51c9, type: 2}

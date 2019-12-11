@@ -9,22 +9,19 @@ public class SoundObject : MonoBehaviour
     [SerializeField]
     private AudioSource source;
 
-    public void PlaySound(AudioClip clip, Vector3 position)
+    public void PlaySound(AudioClip clip, Vector3 position, float maxDistance, float volume)
     {
         transform.position = position;
-        source.PlayOneShot(clip);
-
-        StartCoroutine("CheckSoundEnd");
+        source.maxDistance = maxDistance;
+        source.volume = volume;
+        source.clip = clip;
+        source.Play();
+        StartCoroutine(Play());
     }
 
-    IEnumerator CheckSoundEnd()
+    IEnumerator Play()
     {
-        while(true)
-        {
-            if(!source.isPlaying)
-                poolingObject.Push();
-
-            yield return 0;
-        }
+        yield return new WaitForSeconds(source.clip.length + 0.1f);
+        poolingObject.Push();
     }
 }

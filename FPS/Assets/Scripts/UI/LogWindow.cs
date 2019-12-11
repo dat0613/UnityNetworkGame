@@ -54,6 +54,7 @@ public class LogWindow : MonoBehaviour
 
     public void AddLog(string txt, Color color, int size)
     {
+        SoundManager.Instance.PlaySound("Chatting");
         var logText = Instantiate(logTextPrefab, content.transform);
 
         logText.transform.SetAsLastSibling();
@@ -61,6 +62,7 @@ public class LogWindow : MonoBehaviour
         logText.SetSize(size);
         logText.SetColor(color);
         logText.SetText(txt);
+        logText.SetWidth(380);
 
         logText.SetVisible(visible);
     }

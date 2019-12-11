@@ -20,10 +20,10 @@ public class Trail : MonoBehaviour
 
         endDistance = (endPoint - transform.position).sqrMagnitude;
 
-        if(local)
-        {
-            transform.position -= direction * speed * Time.deltaTime;   
-        }
+        // if(local)
+        // {
+            // transform.position -= direction * speed * Time.deltaTime;   
+        // }
     }
 
     void Start()

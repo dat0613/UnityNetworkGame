@@ -44,8 +44,8 @@ public class SoundManager : MonoBehaviour
         soundPlayer?.PlaySound(name);
     }
     
-    public void PlaySound(string name, Vector3 position)
+    public void PlaySound(string name, Vector3 position, float maxDistance, float volume = 1.0f)
     {
-        soundPlayer?.PlaySound(name, position);
+        soundPlayer?.PlaySound(name, position, maxDistance, volume);
     }
 }
