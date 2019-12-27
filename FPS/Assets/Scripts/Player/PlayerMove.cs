@@ -453,7 +453,7 @@ public class PlayerMove : MonoBehaviourMinNet
 
     void AutoSync()
     {
-        RPCudp("SyncPosition", MinNetRpcTarget.Others, transform.position, sendChestRotation, rotateSign, MinNetUser.ServerTime);
+        RPCudp("SyncPosition", MinNetRpcTarget.AllViaServer, transform.position, sendChestRotation, rotateSign, MinNetUser.ServerTime);
     }
 
     public void ShotSync(int punch, Vector3 endPoint, Vector3 shotPosition, Vector3 muzzlePosition)

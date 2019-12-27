@@ -101,7 +101,7 @@ public class Connect : MonoBehaviourMinNetCallBack
             
             LoadingPanel.Instance.LoadingStart(true);
 
-            MinNetUser.ConnectToServer(ipField.text, 8300, (except) =>
+            MinNetUser.ConnectToServer(ipField.text, 8200, 8201, (except) =>
             {
                 LoadingPanel.Instance.LoadingStop();
 
