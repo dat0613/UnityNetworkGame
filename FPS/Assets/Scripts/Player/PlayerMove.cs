@@ -667,7 +667,7 @@ public class PlayerMove : MonoBehaviourMinNet
             bool nowState = animator.GetBool(name);
             if (lastAnimationState[i] != nowState)
             {// 애니메이션에 변경이 생김
-                RPC("SyncAnimationState", MinNetRpcTarget.Others, name, nowState, MinNetUser.ServerTime);
+                RPCudp("SyncAnimationState", MinNetRpcTarget.P2Pgroup, name, nowState, MinNetUser.ServerTime);
                 lastAnimationState[i] = nowState;
             }
         }
